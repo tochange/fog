@@ -1,8 +1,6 @@
 package com.fog;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -18,26 +16,13 @@ public class FogActivity extends Activity implements Runnable {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        fogDrawer = new FogDrawer(this); 
-        setContentView(fogDrawer);
         
         fluidDynamics = new FludDynamics();
         
+        fogDrawer = new FogDrawer(this, fluidDynamics); 
+        setContentView(fogDrawer);
+        
         timer = new Timer(this, new Handler(), 40);
-    }
-    
-    private static class FogDrawer extends View
-    {
-    	public FogDrawer(Context context)
-    	{
-    		super(context);
-    	}
-    	
-    	@Override
-    	protected void onDraw(Canvas canvas)
-    	{ 
-    		
-    	}
     }
     
     @Override

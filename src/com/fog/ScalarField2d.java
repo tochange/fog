@@ -13,4 +13,11 @@ public class ScalarField2d {
 		stride = width;
 		d = new float[width * height];
 	}
+
+	public int getWidth() { return width; }
+	public int getHeight() { return height; }
+
+	public float get(int x, int y) {
+		return d[x + y * stride];
+	}
 }
