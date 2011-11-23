@@ -38,8 +38,7 @@ public class FludDynamics {
 	{
 		float diff = 0.1f;
 		float[] tmp;
-		//add_source( N, x, x0, dt );
-		
+		add_source(x, x0, dt);
 		
 		tmp = x; x = x0; x0 = tmp;
 		diffuse(dt, 0, x, x0, diff);
@@ -51,7 +50,8 @@ public class FludDynamics {
 	private void vel_step(float dt, float[] u, float[] v, float[] u0, float[] v0, float visc)
 	{
 		float[] tmp;
-		//add_source( N, u, u0, dt ); add_source ( N, v, v0, dt );
+		add_source(u, u0, dt );
+		add_source(v, v0, dt );
 		
 		//SWAP ( u0, u );
 		tmp = u0; u0 = u; u = tmp;
