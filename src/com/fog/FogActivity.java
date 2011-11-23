@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.Window;
+import android.view.ViewGroup.LayoutParams;
 
 public class FogActivity extends Activity implements Runnable {
 	
@@ -17,12 +18,13 @@ public class FogActivity extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
-        fluidDynamics = new FludDynamics(100, 100);
+        fluidDynamics = new FludDynamics(64, 64);
         
-        fogDrawer = new FogDrawer(this, fluidDynamics); 
+        fogDrawer = new FogDrawer(this, fluidDynamics);
+        fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
         
-        timer = new Timer(this, new Handler(), 40);
+        timer = new Timer(this, new Handler(), 250);
     }
     
     @Override
@@ -41,7 +43,12 @@ public class FogActivity extends Activity implements Runnable {
 
 	@Override
 	public void run() {
+		// and some flow...
+		fluidDynamics.addSomeRandomFlow();
+		
 		fluidDynamics.step(0.04f);
 		fogDrawer.invalidate();
+		
+		fluidDynamics.clearStartingConditions();
 	}
 }

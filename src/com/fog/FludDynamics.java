@@ -1,5 +1,7 @@
 package com.fog;
 
+import java.util.Arrays;
+
 
 public class FludDynamics {
 	
@@ -24,6 +26,11 @@ public class FludDynamics {
 		
 		density = new float[n];
 		density_prev = new float[n];
+	}
+	
+	public void addDensityAt(int x, int y)
+	{
+		density_prev[IX(x, y)] = 10;
 	}
 
 	public void step(float dt) {
@@ -154,7 +161,7 @@ public class FludDynamics {
 	
 	void set_bnd (int b, float[] x)
 	{
-		int N =100;
+		int N = width; // TODO: or height?
 		for (int i=1 ; i<=N ; i++ ) {
 			x[IX(0 ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
 			x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
@@ -179,4 +186,18 @@ public class FludDynamics {
 
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
+
+	public void clearStartingConditions() {
+		Arrays.fill(density_prev, 0f);
+		Arrays.fill(u_prev, 0f);
+		Arrays.fill(v_prev, 0f);
+	}
+
+	public void addSomeRandomFlow() {
+		u_prev[0] = 50;
+		v_prev[0] = 50;
+		u_prev[1] = 50;
+		v_prev[1] = 50;
+		
+	}
 }
