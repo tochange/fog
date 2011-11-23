@@ -17,7 +17,7 @@ public class FogActivity extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
-        fluidDynamics = new FludDynamics();
+        fluidDynamics = new FludDynamics(100, 100);
         
         fogDrawer = new FogDrawer(this, fluidDynamics); 
         setContentView(fogDrawer);
