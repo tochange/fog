@@ -86,28 +86,42 @@ public class FludDynamics {
 	{
 		int i, j, k;
 		float h = 1.0f / width; // TODO: or / width??
-		for ( i=1 ; i<=width ; i++ ) {
-			for ( j=1 ; j<=height ; j++ ) {
-				div[IX(i,j)] = -0.5f * h *(u[IX(i+1,j)]-u[IX(i-1,j)]+v[IX(i,j+1)]-v[IX(i,j-1)]);
-				p[IX(i,j)] = 0;
+		int index = stride + 1; // start at 1,1
+		for ( i=1 ; i<=height ; i++ ) {
+			for ( j=1 ; j<=width ; j++ ) {
+//				div[IX(i,j)] = -0.5f * h *(u[IX(i+1,j)]-u[IX(i-1,j)]+v[IX(i,j+1)]-v[IX(i,j-1)]);
+//				p[IX(i,j)] = 0;
+				div[index] = -0.5f * h *(u[index+1]-u[index-1]+v[index+stride]-v[index-stride]);
+				p[index] = 0;
+				index++;
 			}
+			index += stride - width;
 		}
 		set_bnd(0, div ); set_bnd (0, p);
 		
 		for ( k=0 ; k<20 ; k++ ) {
-			for ( i=1 ; i<=width ; i++ ) {
-				for ( j=1 ; j<=height ; j++ ) {
-					p[IX(i,j)] = (div[IX(i,j)]+p[IX(i-1,j)]+p[IX(i+1,j)]+ p[IX(i,j-1)]+p[IX(i,j+1)])/4;
+			index = stride + 1; // start at 1,1
+			for ( i=1 ; i<=height ; i++ ) {
+				for ( j=1 ; j<=width ; j++ ) {
+					//p[IX(i,j)] = (div[IX(i,j)]+p[IX(i-1,j)]+p[IX(i+1,j)]+ p[IX(i,j-1)]+p[IX(i,j+1)])/4;
+					p[index] = (div[index]+p[index-1]+p[index+1]+ p[index-stride]+p[index+stride])/4;
+					index++;
 				}
 			}
+			index += stride - width;
 			set_bnd(0, p);
 		}
 		
-		for ( i=1 ; i<=width ; i++ ) {
-			for ( j=1 ; j<=height ; j++ ) {
-				u[IX(i,j)] -= 0.5*(p[IX(i+1,j)]-p[IX(i-1,j)])/h;
-				v[IX(i,j)] -= 0.5*(p[IX(i,j+1)]-p[IX(i,j-1)])/h;
+		index = stride + 1; // start at 1,1
+		for ( i=1 ; i<=height ; i++ ) {
+			for ( j=1 ; j<=width ; j++ ) {
+//				u[IX(i,j)] -= 0.5*(p[IX(i+1,j)]-p[IX(i-1,j)])/h;
+//				v[IX(i,j)] -= 0.5*(p[IX(i,j+1)]-p[IX(i,j-1)])/h;
+				u[index] -= 0.5*(p[index+1]-p[index-1])/h;
+				v[index] -= 0.5*(p[index+stride]-p[index-stride])/h;
+				index++;
 			}
+			index += stride - width;
 			set_bnd(1, u);
 			set_bnd(2, v);
 		}
@@ -117,10 +131,13 @@ public class FludDynamics {
 	{
 		float a = dt * diff * width * height;
 		for (int k=0 ; k<20 ; k++ ) {
+			int index = stride + 1; // start at 1,1
 			for (int i=1 ; i<=width ; i++ ) {
 				for (int j=1 ; j<=height; j++ ) {
-					x[IX(i,j)] = (x0[IX(i,j)] + a*(x[IX(i-1,j)]+x[IX(i+1,j)]+x[IX(i,j-1)]+x[IX(i,j+1)]))/(1+4*a);
+					x[index] = (x0[index] + a*(x[index-1]+x[index+1]+x[index-stride]+x[index+stride]))/(1+4*a);
+					index++;
 				}
+				index += stride - width;
 			}
 			set_bnd(b, x);
 		}
