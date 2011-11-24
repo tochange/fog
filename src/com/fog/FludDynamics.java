@@ -145,12 +145,14 @@ public class FludDynamics {
 	
 	private void advect(float dt, int b, float[] d, float[] d0, float[] u, float[] v)
 	{
-		int i, j, i0, j0, i1, j1; float x, y, s0, t0, s1, t1, dt0;
-		dt0 = dt * width; // or * height??
+		int i, j, i0, j0, i1, j1; float x, y, s0, t0, s1, t1;
+		float dt0 = dt * width; // or * height??
+		
+		int index = stride + 1;
 		for ( i=1 ; i<=width ; i++ ) {
 			for ( j=1 ; j<=height ; j++ ) {
-				x = i-dt0*u[IX(i,j)];
-				y = j-dt0*v[IX(i,j)];
+				x = i-dt0*u[index];
+				y = j-dt0*v[index];
 				
 				if (x<0.5) x=0.5f;
 				if (x>width+0.5) x = width + 0.5f;
@@ -167,8 +169,10 @@ public class FludDynamics {
 				t1 = y-j0;
 				t0 = 1-t1;
 				
-				d[IX(i,j)] = s0 * (t0 * d0[IX(i0, j0)] + t1 * d0[IX(i0,j1)])+s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
+				d[index] = s0 * (t0 * d0[IX(i0, j0)] + t1 * d0[IX(i0,j1)])+s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
+				index++;
 			}
+			index += stride - width;
 		}
 		set_bnd(b, d);
 	}
@@ -178,24 +182,28 @@ public class FludDynamics {
 		return x + y*stride;
 	}
 	
-	void set_bnd (int b, float[] x)
+	void set_bnd (int b, float[] values)
 	{
 		int N = width; // TODO: or height?
-		for (int i=1 ; i<=N ; i++ ) {
-			x[IX(0 ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
-			x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
-			x[IX(i,0 )] = b==2 ? -x[IX(i,1)] : x[IX(i,1)];
-			x[IX(i,N+1)] = b==2 ? -x[IX(i,N)] : x[IX(i,N)];
+		for (int y=1 ; y<=height ; y++ ) {
+			values[IX(0,	y)] = b==1 ? -values[IX(1,y)] : values[IX(1,y)];
+			values[IX(width+1,y)] = b==1 ? -values[IX(width,y)] : values[IX(width,y)];
 		}
-		x[IX(0 ,0 )] = 0.5f*(x[IX(1,0 )]+x[IX(0 ,1)]);
-		x[IX(0	,N+1)]	=	0.5f*(x[IX(1,N+1)]+x[IX(0	,N )]);
-		x[IX(N+1,0 )] = 0.5f*(x[IX(N,0 )]+x[IX(N+1,1)]);
-		x[IX(N+1,N+1)] = 0.5f*(x[IX(N,N+1)]+x[IX(N+1,N)]);
+		
+		for (int x=1 ; x<=width ; x++ ) {
+			values[IX(x,0 )] = b==2 ? -values[IX(x,1)] : values[IX(x,1)];
+			values[IX(x,height+1)] = b==2 ? -values[IX(x,height)] : values[IX(x,height)];
+		}
+		
+		values[IX(0 ,0 )] = 0.5f*(values[IX(1,0 )]+values[IX(0 ,1)]);
+		values[IX(0	,N+1)]	=	0.5f*(values[IX(1,N+1)]+values[IX(0	,N )]);
+		values[IX(N+1,0 )] = 0.5f*(values[IX(N,0 )]+values[IX(N+1,1)]);
+		values[IX(N+1,N+1)] = 0.5f*(values[IX(N,N+1)]+values[IX(N+1,N)]);
 	} 
 
 	private void add_source(float[] x, float[] s, float dt)
 	{
-		int size=width*height;
+		int size = Math.min(x.length, s.length);
 		for (int i=0; i<size; i++) x[i] += dt*s[i];
 	}	
 	
@@ -205,7 +213,8 @@ public class FludDynamics {
 
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
-
+	public int getStride() { return stride; }
+	
 	public void clearStartingConditions() {
 		Arrays.fill(density_prev, 0f);
 		Arrays.fill(u_prev, 0f);
@@ -217,10 +226,5 @@ public class FludDynamics {
 		v_prev[0] = 50;
 		u_prev[1] = 50;
 		v_prev[1] = 50;
-		
-	}
-
-	public int getStride() {
-		return stride;
-	}
+	}	
 }
