@@ -132,8 +132,8 @@ public class FludDynamics {
 		float a = dt * diff * width * height;
 		for (int k=0 ; k<20 ; k++ ) {
 			int index = stride + 1; // start at 1,1
-			for (int i=1 ; i<=width ; i++ ) {
-				for (int j=1 ; j<=height; j++ ) {
+			for (int i=1 ; i<=height ; i++ ) {
+				for (int j=1 ; j<=width; j++ ) {
 					x[index] = (x0[index] + a*(x[index-1]+x[index+1]+x[index-stride]+x[index+stride]))/(1+4*a);
 					index++;
 				}
@@ -149,27 +149,27 @@ public class FludDynamics {
 		float dt0 = dt * width; // or * height??
 		
 		int index = stride + 1;
-		for ( i=1 ; i<=width ; i++ ) {
-			for ( j=1 ; j<=height ; j++ ) {
-				x = i-dt0*u[index];
-				y = j-dt0*v[index];
+		for ( i=1 ; i<=height ; i++ ) {
+			for ( j=1 ; j<=width ; j++ ) {
+				x = j-dt0*u[index];
+				y = i-dt0*v[index];
 				
 				if (x<0.5) x=0.5f;
 				if (x>width+0.5) x = width + 0.5f;
-				i0=(int)x;
-				i1=i0+1;
+				j0=(int)x;
+				j1=j0+1;
 				
 				if (y<0.5) y=0.5f;
 				if (y>height+0.5) y = height + 0.5f;
-				j0=(int)y;
-				j1=j0+1;
+				i0=(int)y;
+				i1=i0+1;
 				
-				s1 = x-i0;
+				s1 = x-j0;
 				s0 = 1-s1;
-				t1 = y-j0;
+				t1 = y-i0;
 				t0 = 1-t1;
 				
-				d[index] = s0 * (t0 * d0[IX(i0, j0)] + t1 * d0[IX(i0,j1)])+s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
+				d[index] = s0 * (t0 * d0[IX(j0, i0)] + t1 * d0[IX(j0,i1)])+s1*(t0*d0[IX(j1,i0)]+t1*d0[IX(j1,i1)]);
 				index++;
 			}
 			index += stride - width;

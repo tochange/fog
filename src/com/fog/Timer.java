@@ -1,6 +1,7 @@
 package com.fog;
 
 import android.os.Handler;
+import android.os.SystemClock;
 
 public class Timer implements Runnable {
 	private Runnable r;
@@ -30,7 +31,20 @@ public class Timer implements Runnable {
 	public void run()
 	{
 		if (!running) return;
+		
+		long start = SystemClock.uptimeMillis();
 		r.run();
-		handler.postDelayed(this, interval);
+		long end = SystemClock.uptimeMillis();
+		
+		long duration = end - start;
+		long adjustedInterval = interval - duration;
+		if (adjustedInterval < 0)
+		{
+			handler.post(this);
+		}
+		else
+		{
+			handler.postDelayed(this, adjustedInterval);
+		}
 	}
 }
