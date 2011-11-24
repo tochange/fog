@@ -7,6 +7,7 @@ public class FludDynamics {
 	
 	private int width;
 	private int height;
+	private int stride;
 	
 	private float[] u, v;
 	private float[] u_prev, v_prev;
@@ -18,6 +19,7 @@ public class FludDynamics {
 	{
 		this.width = width;
 		this.height = height;
+		stride = width + 2;
 		int n = (width+2) * (height+2);
 		u = new float[n];
 		v = new float[n];
@@ -156,7 +158,7 @@ public class FludDynamics {
 	
 	private int IX(int x, int y)
 	{
-		return x + y*width;
+		return x + y*stride;
 	}
 	
 	void set_bnd (int b, float[] x)
@@ -199,5 +201,9 @@ public class FludDynamics {
 		u_prev[1] = 50;
 		v_prev[1] = 50;
 		
+	}
+
+	public int getStride() {
+		return stride;
 	}
 }

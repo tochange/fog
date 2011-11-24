@@ -40,14 +40,16 @@ class FogDrawer extends View implements OnTouchListener
 		
 		
 		int index = 0;
+		int dindex = fluidDynamics.getStride() + 1;
 		for (int y=0; y<fluidDynamics.getHeight(); y++)
 		{
 			for (int x=0; x<fluidDynamics.getWidth(); x++)
 			{
-				int c = (int)(255 * density[index] / max);
-				//int c =  (x * 4 + y*4) & 0xff;
+				int c = (int)(255 * density[dindex] / max);
 				colors[index++] = (0xff << 24) | (c<< 16) | (c << 8) | c;
+				dindex++;
 			}
+			dindex+=2;
 		}
 		
 		Rect dest = new Rect(0, 0, 0 + getWidth(), 0 + getHeight());
