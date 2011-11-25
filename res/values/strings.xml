@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, FogActivity!</string>
     <string name="app_name">Fog</string>
+<string name="openPreferences">Settings</string>
 </resources>
