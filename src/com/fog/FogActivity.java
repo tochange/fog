@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ public class FogActivity extends Activity implements Runnable {
     protected void onResume()
     {
     	super.onResume();
+    	Log.i("fog", "resuming");
     	timer.start();
     }
     
@@ -42,6 +44,7 @@ public class FogActivity extends Activity implements Runnable {
     protected void onPause()
     {
     	timer.stop();
+    	Log.i("fog", "pausing");
     	super.onPause();
     }
 

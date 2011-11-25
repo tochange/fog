@@ -3,4 +3,13 @@
     <CheckBoxPreference
             android:key="Checkbox setting"
             android:title="Checkbox setting" />
+	<com.fog.common.SeekbarPreference
+		android:key="duration"
+        android:title="Duration of something"
+        android:summary="How long something will last"
+        android:dialogMessage="Something duration"
+        android:defaultValue="5"
+        android:text=" minutes"
+        android:max="60"
+        />
 </PreferenceScreen> 
