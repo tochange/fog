@@ -17,6 +17,8 @@ class FogDrawer extends View implements OnTouchListener
 	private FludDynamics fluidDynamics;
 	private int[] colors;
 
+	float max = Float.MIN_VALUE;
+	
 	public FogDrawer(Context context, FludDynamics fluidDynamics)
 	{
 		super(context);
@@ -31,13 +33,8 @@ class FogDrawer extends View implements OnTouchListener
 	{ 
 		float[] density = fluidDynamics.getDensity();
 		
-		float max = Float.MIN_VALUE;
 		for (int i=0; i<density.length; i++) 
 			if (density[i] > max) max = density[i];
-		
-		Log.i("FogDrawer", "max: " + max);
-		
-		
 		
 		int index = 0;
 		int dindex = fluidDynamics.getStride() + 1;
