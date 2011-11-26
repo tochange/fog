@@ -63,13 +63,15 @@ class FogView extends View implements OnTouchListener
 	}
 
 	@Override
-	public boolean onTouch(View arg0, MotionEvent me) {
+	public boolean onTouch(View view, MotionEvent me) {
+		for (int i=0; i<me.getPointerCount(); i++)
+		{
+			int x  = (int)(me.getX(i) * fluidDynamics.getWidth() / getWidth());
+			int y  = (int)(me.getY(i) * fluidDynamics.getHeight() / getHeight());
+			if (x > 0 & x < fluidDynamics.getWidth() && y > 0 && y < fluidDynamics.getHeight())
+				fluidDynamics.addDensityAt(x, y);
+		}
 		
-		
-		int x  = (int)(me.getX() * fluidDynamics.getWidth() / getWidth());
-		int y  = (int)(me.getY() * fluidDynamics.getHeight() / getHeight());
-		if (x > 0 & x < fluidDynamics.getWidth() && y > 0 && y < fluidDynamics.getHeight())
-			fluidDynamics.addDensityAt(x, y);
 		return true;
 	}
 }

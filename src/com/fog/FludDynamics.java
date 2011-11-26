@@ -34,7 +34,7 @@ public class FludDynamics {
 	
 	public void addDensityAt(int x, int y)
 	{
-		density_prev[IX(x, y)] = 80;
+		density_prev[IX(x, y)] = 800;
 	}
 
 	public void step(float dt) {
