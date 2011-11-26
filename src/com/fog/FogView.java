@@ -1,5 +1,8 @@
 package com.fog;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -56,10 +59,13 @@ class FogView extends View implements OnTouchListener
 		Bitmap bm = Bitmap.createBitmap(colors, fluidDynamics.getWidth(), fluidDynamics.getHeight(), Config.ARGB_8888);
 		canvas.drawBitmap(bm, null, dest, null);
 		
+		NumberFormat formatter = new DecimalFormat("#0.00");
 		Paint paint = new Paint();
 		paint.setStyle(Paint.Style.FILL);
 		paint.setColor(Color.WHITE);
-		canvas.drawText("dt: " + timer.getInterval() + "ms", 40, 40, paint);
+		canvas.drawText("fps=" + timer.getInterval() + "ms", 0, 20, paint);
+		canvas.drawText("v= " + formatter.format(fluidDynamics.getDiffusionRate()), 0, 40, paint);
+		canvas.drawText("d=" + formatter.format(fluidDynamics.getViscosity()), 0, 60, paint);
 	}
 
 	@Override
@@ -68,8 +74,12 @@ class FogView extends View implements OnTouchListener
 		{
 			int x  = (int)(me.getX(i) * fluidDynamics.getWidth() / getWidth());
 			int y  = (int)(me.getY(i) * fluidDynamics.getHeight() / getHeight());
-			if (x > 0 & x < fluidDynamics.getWidth() && y > 0 && y < fluidDynamics.getHeight())
-				fluidDynamics.addDensityAt(x, y);
+			
+			fluidDynamics.addDensityAt(x, y);
+			fluidDynamics.addDensityAt(x+1, y);
+			fluidDynamics.addDensityAt(x, y+1);
+			fluidDynamics.addDensityAt(x-1, y);
+			fluidDynamics.addDensityAt(x, y-1);
 		}
 		
 		return true;

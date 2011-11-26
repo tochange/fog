@@ -34,7 +34,8 @@ public class FludDynamics {
 	
 	public void addDensityAt(int x, int y)
 	{
-		density_prev[IX(x, y)] = 800;
+		if (x > 0 && x <= width && y > 0 && y <= height)
+			density_prev[IX(x, y)] = 80;
 	}
 
 	public void step(float dt) {
@@ -230,5 +231,8 @@ public class FludDynamics {
 
 	public void setDiffusionRate(float diffusionRate) {
 		diff = diffusionRate;
-	}	
+	}
+
+	public float getDiffusionRate() { return diff; }
+	public float getViscosity() { return visc; }
 }

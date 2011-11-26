@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,7 +34,7 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
         
-        prefs = getPreferences(MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
     
 	@Override
@@ -105,8 +106,8 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
 	}
 
 	private void updateSimulation(SharedPreferences preferences) {
-		float visc = Float.parseFloat(preferences.getString("viscosity", "0.1"));
-		float diff = Float.parseFloat(preferences.getString("diffusion_rate", "0.1"));
+		float visc = Float.parseFloat(preferences.getString("viscosity", "0"));
+		float diff = Float.parseFloat(preferences.getString("diff_rate", "0.1"));
 		fluidDynamics.setViscosity(visc);
 		fluidDynamics.setDiffusionRate(diff);
 	}

@@ -3,30 +3,34 @@
     <string name="hello">Hello World, FogActivity!</string>
     <string name="app_name">Fog</string>
 <string name="openPreferences">Settings</string>
-<string-array name="viscosities"><item>0.05</item><item>0.1</item>
-<item>0.25</item>
-<item>0.5</item>
-
-</string-array>
-<string-array name="diffusion_rates"><item>0.001</item><item>0.05</item><item>0.1</item>
+<string-array name="viscosities"><item>0</item><item>0.05</item><item>0.1</item>
 <item>0.25</item>
 <item>0.5</item>
 
 
+</string-array>
+<string-array name="diffusion_rates"><item>0</item><item>0.001</item><item>0.05</item><item>0.1</item>
+<item>0.25</item>
+<item>0.5</item>
+
+
+
 
 </string-array>
 
 
 
-<string-array name="viscosity_values"><item>0.05</item>
+<string-array name="viscosity_values"><item>0</item><item>0.05</item>
 <item>0.1</item>
 <item>0.25</item>
 <item>0.5</item>
+
 </string-array>
-<string-array name="diffusion_rate_values"><item>0.001</item><item>0.05</item>
+<string-array name="diffusion_rate_values"><item>0</item><item>0.001</item><item>0.05</item>
 <item>0.1</item>
 <item>0.25</item>
 <item>0.5</item>
+
 
 </string-array>
 </resources>
