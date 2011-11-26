@@ -179,7 +179,6 @@ public class FludDynamics {
 	
 	private void setBoundaryConditions(int b, float[] values)
 	{
-		int N = width; // TODO: or height?
 		for (int y=1 ; y<=height ; y++ ) {
 			values[IX(0,	y)] = b==1 ? -values[IX(1,y)] : values[IX(1,y)];
 			values[IX(width+1,y)] = b==1 ? -values[IX(width,y)] : values[IX(width,y)];
@@ -191,9 +190,9 @@ public class FludDynamics {
 		}
 		
 		values[IX(0 ,0 )] = 0.5f*(values[IX(1,0 )]+values[IX(0 ,1)]);
-		values[IX(0	,N+1)]	=	0.5f*(values[IX(1,N+1)]+values[IX(0	,N )]);
-		values[IX(N+1,0 )] = 0.5f*(values[IX(N,0 )]+values[IX(N+1,1)]);
-		values[IX(N+1,N+1)] = 0.5f*(values[IX(N,N+1)]+values[IX(N+1,N)]);
+		values[IX(0	,height+1)]	=	0.5f*(values[IX(1,height+1)]+values[IX(0	,height )]);
+		values[IX(width+1,0 )] = 0.5f*(values[IX(width,0 )]+values[IX(width+1,1)]);
+		values[IX(width+1,height+1)] = 0.5f*(values[IX(width,height+1)]+values[IX(width+1,height)]);
 	} 
 
 	private void add_source(float[] x, float[] s, float dt)
