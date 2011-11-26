@@ -2,9 +2,10 @@ package com.fog;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,11 +13,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
 
-public class FogActivity extends Activity implements Runnable {
+public class FogActivity extends Activity implements Runnable, OnSharedPreferenceChangeListener {
 	
     private FludDynamics fluidDynamics;
     private FixedFrameRateTimer timer;
     private View fogDrawer;
+	private SharedPreferences prefs;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,22 +32,23 @@ public class FogActivity extends Activity implements Runnable {
         fogDrawer = new FogView(this, fluidDynamics, timer);
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
+        
+        prefs = getPreferences(MODE_PRIVATE);
     }
     
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		prefs.registerOnSharedPreferenceChangeListener(this);
+		updateSimulation(prefs);
+	}
+	
     @Override
     protected void onResume()
     {
     	super.onResume();
-    	Log.i("fog", "resuming");
     	timer.start();
-    }
-    
-    @Override 
-    protected void onPause()
-    {
-    	timer.stop();
-    	Log.i("fog", "pausing");
-    	super.onPause();
     }
 
 	@Override
@@ -59,6 +62,20 @@ public class FogActivity extends Activity implements Runnable {
 		fluidDynamics.clearStartingConditions();
 	}
 	
+    @Override 
+    protected void onPause()
+    {
+    	timer.stop();
+    	super.onPause();
+    }
+
+    @Override
+	protected void onStop()
+    {
+    	prefs.unregisterOnSharedPreferenceChangeListener(this);
+    	super.onStop();
+    }
+    
 	private float millisToSeconds(long millis)
 	{
 		return millis / 1000f;
@@ -80,5 +97,17 @@ public class FogActivity extends Activity implements Runnable {
 	        return true;
 	    }
 	    return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+		updateSimulation(preferences);
+	}
+
+	private void updateSimulation(SharedPreferences preferences) {
+		float visc = Float.parseFloat(preferences.getString("viscosity", "0.1"));
+		float diff = Float.parseFloat(preferences.getString("diffusion_rate", "0.1"));
+		fluidDynamics.setViscosity(visc);
+		fluidDynamics.setDiffusionRate(diff);
 	}
 }

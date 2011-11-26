@@ -1,10 +1,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 	<ListPreference
+		android:key="viscosity"
+		android:persistent="true"
 		android:title="Viscosity"
 		android:summary="The viscocity"
-		android:entries="@array/viscosities" />
+		android:entries="@array/viscosities"
+		android:entryValues="@array/viscosity_values"/>
 	<ListPreference
+		android:key="diff_rate"
+		android:persistent="true"
 		android:title="Diffusion Rate"
 		android:summary="The Diffusion Rate"
-		android:entries="@array/diffusion_rates" />
+		android:entries="@array/diffusion_rates"
+		android:entryValues="@array/diffusion_rate_values" />
 </PreferenceScreen> 

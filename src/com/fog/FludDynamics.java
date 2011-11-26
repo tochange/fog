@@ -14,6 +14,8 @@ public class FludDynamics {
 	
 	private float[] density;
 	private float[] density_prev;
+	private float visc = 0.1f;
+	private float diff = 0.1f;
 	
 	public FludDynamics(int width, int height)
 	{
@@ -37,7 +39,6 @@ public class FludDynamics {
 
 	public void step(float dt) {
 		//get_from_UI( dens_prev, u_prev, v_prev );
-		float visc = 0.3f;
 		vel_step (dt, u, v, u_prev, v_prev, visc);
 		dens_step (density, density_prev, u, v, dt);
 		//draw_dens ( N, dens );
@@ -45,7 +46,6 @@ public class FludDynamics {
 	
 	private void dens_step(float[] x, float[] x0, float[] u, float[] v, float dt)
 	{
-		float diff = 0.1f;
 		float[] tmp;
 		add_source(x, x0, dt);
 		
@@ -89,41 +89,36 @@ public class FludDynamics {
 		int index = stride + 1; // start at 1,1
 		for ( i=1 ; i<=height ; i++ ) {
 			for ( j=1 ; j<=width ; j++ ) {
-//				div[IX(i,j)] = -0.5f * h *(u[IX(i+1,j)]-u[IX(i-1,j)]+v[IX(i,j+1)]-v[IX(i,j-1)]);
-//				p[IX(i,j)] = 0;
 				div[index] = -0.5f * h *(u[index+1]-u[index-1]+v[index+stride]-v[index-stride]);
 				p[index] = 0;
 				index++;
 			}
 			index += stride - width;
 		}
-		set_bnd(0, div ); set_bnd (0, p);
+		setBoundaryConditions(0, div ); setBoundaryConditions (0, p);
 		
 		for ( k=0 ; k<20 ; k++ ) {
 			index = stride + 1; // start at 1,1
 			for ( i=1 ; i<=height ; i++ ) {
 				for ( j=1 ; j<=width ; j++ ) {
-					//p[IX(i,j)] = (div[IX(i,j)]+p[IX(i-1,j)]+p[IX(i+1,j)]+ p[IX(i,j-1)]+p[IX(i,j+1)])/4;
 					p[index] = (div[index]+p[index-1]+p[index+1]+ p[index-stride]+p[index+stride])/4;
 					index++;
 				}
 			}
 			index += stride - width;
-			set_bnd(0, p);
+			setBoundaryConditions(0, p);
 		}
 		
 		index = stride + 1; // start at 1,1
 		for ( i=1 ; i<=height ; i++ ) {
 			for ( j=1 ; j<=width ; j++ ) {
-//				u[IX(i,j)] -= 0.5*(p[IX(i+1,j)]-p[IX(i-1,j)])/h;
-//				v[IX(i,j)] -= 0.5*(p[IX(i,j+1)]-p[IX(i,j-1)])/h;
 				u[index] -= 0.5*(p[index+1]-p[index-1])/h;
 				v[index] -= 0.5*(p[index+stride]-p[index-stride])/h;
 				index++;
 			}
 			index += stride - width;
-			set_bnd(1, u);
-			set_bnd(2, v);
+			setBoundaryConditions(1, u);
+			setBoundaryConditions(2, v);
 		}
 	}
 	
@@ -139,7 +134,7 @@ public class FludDynamics {
 				}
 				index += stride - width;
 			}
-			set_bnd(b, x);
+			setBoundaryConditions(b, x);
 		}
 	}
 	
@@ -174,7 +169,7 @@ public class FludDynamics {
 			}
 			index += stride - width;
 		}
-		set_bnd(b, d);
+		setBoundaryConditions(b, d);
 	}
 	
 	private int IX(int x, int y)
@@ -182,7 +177,7 @@ public class FludDynamics {
 		return x + y*stride;
 	}
 	
-	void set_bnd (int b, float[] values)
+	private void setBoundaryConditions(int b, float[] values)
 	{
 		int N = width; // TODO: or height?
 		for (int y=1 ; y<=height ; y++ ) {
@@ -222,11 +217,19 @@ public class FludDynamics {
 	}
 
 	public void addSomeRandomFlow() {
-		for (int y=0; y<5; y++)
-			for (int x=0; x<5; x++)
-			{
-				u_prev[x] = 250;
-				v_prev[y] = 250;
-			}
+//		for (int y=0; y<5; y++)
+//			for (int x=0; x<5; x++)
+//			{
+//				u_prev[x] = 250;
+//				v_prev[y] = 250;
+//			}
+	}
+
+	public void setViscosity(float viscosity) {
+		visc = viscosity;
+	}
+
+	public void setDiffusionRate(float diffusionRate) {
+		diff = diffusionRate;
 	}	
 }
