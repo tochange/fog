@@ -15,7 +15,7 @@ import android.view.ViewGroup.LayoutParams;
 public class FogActivity extends Activity implements Runnable {
 	
     private FludDynamics fluidDynamics;
-    private Timer timer;
+    private FixedFrameRateTimer timer;
     private View fogDrawer;
     
 	@Override
@@ -29,7 +29,7 @@ public class FogActivity extends Activity implements Runnable {
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
         
-        timer = new Timer(this, new Handler(), 40);
+        timer = new FixedFrameRateTimer(this, new Handler(), 40);
     }
     
     @Override

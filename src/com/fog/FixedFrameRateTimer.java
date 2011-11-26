@@ -3,13 +3,13 @@ package com.fog;
 import android.os.Handler;
 import android.os.SystemClock;
 
-public class Timer implements Runnable {
+public class FixedFrameRateTimer implements Runnable {
 	private Runnable r;
 	private final Handler handler;
 	private long interval;
 	private volatile boolean running;
 	
-	public Timer(Runnable r, Handler handler, long interval)
+	public FixedFrameRateTimer(Runnable r, Handler handler, long interval)
 	{
 		this.r = r;
 		this.handler = handler;
