@@ -25,7 +25,7 @@ public class FogActivity extends Activity implements Runnable {
         
         fluidDynamics = new FludDynamics(32, 32);
         
-        fogDrawer = new FogDrawer(this, fluidDynamics);
+        fogDrawer = new FogView(this, fluidDynamics);
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
         

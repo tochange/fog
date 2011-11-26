@@ -12,14 +12,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-class FogDrawer extends View implements OnTouchListener
+class FogView extends View implements OnTouchListener
 {
 	private FludDynamics fluidDynamics;
 	private int[] colors;
 
 	float max = Float.MIN_VALUE;
 	
-	public FogDrawer(Context context, FludDynamics fluidDynamics)
+	public FogView(Context context, FludDynamics fluidDynamics)
 	{
 		super(context);
 		this.fluidDynamics = fluidDynamics;
