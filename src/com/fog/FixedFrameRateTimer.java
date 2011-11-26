@@ -8,12 +8,15 @@ public class FixedFrameRateTimer implements Runnable {
 	private final Handler handler;
 	private long interval;
 	private volatile boolean running;
-	
+
+	private long reportInterval;
+
 	public FixedFrameRateTimer(Runnable r, Handler handler, long interval)
 	{
 		this.r = r;
 		this.handler = handler;
 		this.interval = interval;
+		reportInterval = interval;
 	}
 	
 	public void start()
@@ -25,7 +28,7 @@ public class FixedFrameRateTimer implements Runnable {
 	
 	public void stop()
 	{
-		running = true;
+		running = false;
 	}
 	
 	public void run()
@@ -40,11 +43,17 @@ public class FixedFrameRateTimer implements Runnable {
 		long adjustedInterval = interval - duration;
 		if (adjustedInterval < 0)
 		{
+			reportInterval = duration;
 			handler.post(this);
 		}
 		else
 		{
+			reportInterval = interval;
 			handler.postDelayed(this, adjustedInterval);
 		}
+	}
+
+	public long getInterval() {
+		return reportInterval;
 	}
 }

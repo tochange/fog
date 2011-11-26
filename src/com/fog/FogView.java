@@ -3,6 +3,8 @@ package com.fog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
 import android.view.MotionEvent;
@@ -13,13 +15,16 @@ class FogView extends View implements OnTouchListener
 {
 	private FludDynamics fluidDynamics;
 	private int[] colors;
-
+	private FixedFrameRateTimer timer; 
+	
 	float max = Float.MIN_VALUE;
 	
-	public FogView(Context context, FludDynamics fluidDynamics)
+	public FogView(Context context, FludDynamics fluidDynamics, FixedFrameRateTimer timer)
 	{
 		super(context);
 		this.fluidDynamics = fluidDynamics;
+		this.timer = timer;
+		
 		setOnTouchListener(this);
 		
 		colors = new int[fluidDynamics.getWidth() * fluidDynamics.getHeight()];
@@ -50,6 +55,11 @@ class FogView extends View implements OnTouchListener
 		
 		Bitmap bm = Bitmap.createBitmap(colors, fluidDynamics.getWidth(), fluidDynamics.getHeight(), Config.ARGB_8888);
 		canvas.drawBitmap(bm, null, dest, null);
+		
+		Paint paint = new Paint();
+		paint.setStyle(Paint.Style.FILL);
+		paint.setColor(Color.WHITE);
+		canvas.drawText("dt: " + timer.getInterval() + "ms", 40, 40, paint);
 	}
 
 	@Override

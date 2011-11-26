@@ -25,11 +25,11 @@ public class FogActivity extends Activity implements Runnable {
         
         fluidDynamics = new FludDynamics(32, 32);
         
-        fogDrawer = new FogView(this, fluidDynamics);
+        timer = new FixedFrameRateTimer(this, new Handler(), 40);
+        
+        fogDrawer = new FogView(this, fluidDynamics, timer);
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
-        
-        timer = new FixedFrameRateTimer(this, new Handler(), 40);
     }
     
     @Override
@@ -53,10 +53,15 @@ public class FogActivity extends Activity implements Runnable {
 		// and some flow...
 		fluidDynamics.addSomeRandomFlow();
 		
-		fluidDynamics.step(0.04f);
+		fluidDynamics.step(millisToSeconds(timer.getInterval()));
 		fogDrawer.invalidate();
 		
 		fluidDynamics.clearStartingConditions();
+	}
+	
+	private float millisToSeconds(long millis)
+	{
+		return millis / 1000f;
 	}
 	
 	@Override
