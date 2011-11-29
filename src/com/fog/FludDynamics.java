@@ -216,15 +216,6 @@ public class FludDynamics {
 		Arrays.fill(v_prev, 0f);
 	}
 
-	public void addSomeRandomFlow() {
-//		for (int y=0; y<5; y++)
-//			for (int x=0; x<5; x++)
-//			{
-//				u_prev[x] = 250;
-//				v_prev[y] = 250;
-//			}
-	}
-
 	public void setViscosity(float viscosity) {
 		visc = viscosity;
 	}

@@ -7,7 +7,7 @@ public class FixedFrameRateTimer implements Runnable {
 	private Runnable r;
 	private final Handler handler;
 	private long interval;
-	private volatile boolean running;
+	private boolean running;
 
 	private long reportInterval;
 
@@ -55,5 +55,9 @@ public class FixedFrameRateTimer implements Runnable {
 
 	public long getInterval() {
 		return reportInterval;
+	}
+
+	public void setTargetInterval(int interval) {
+		this.interval = interval;
 	}
 }

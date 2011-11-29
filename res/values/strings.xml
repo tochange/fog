@@ -33,4 +33,16 @@
 
 
 </string-array>
+<string-array name="target_fps"><item>1</item>
+<item>10</item>
+<item>20</item>
+<item>25</item>
+<item>30</item>
+</string-array>
+<string-array name="target_fps_values"><item>1</item>
+<item>10</item>
+<item>20</item>
+<item>25</item>
+<item>30</item>
+</string-array>
 </resources>

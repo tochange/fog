@@ -26,6 +26,8 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         fluidDynamics = new FludDynamics(32, 32);
         
         timer = new FixedFrameRateTimer(this, new Handler(), 40);
@@ -33,8 +35,6 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
         fogDrawer = new FogView(this, fluidDynamics, timer);
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
-        
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
     
 	@Override
@@ -55,7 +55,7 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
 	@Override
 	public void run() {
 		// and some flow...
-		fluidDynamics.addSomeRandomFlow();
+		//fluidDynamics.addSomeRandomFlow();
 		
 		fluidDynamics.step(millisToSeconds(timer.getInterval()));
 		fogDrawer.invalidate();
@@ -110,5 +110,8 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
 		float diff = Float.parseFloat(preferences.getString("diff_rate", "0.1"));
 		fluidDynamics.setViscosity(visc);
 		fluidDynamics.setDiffusionRate(diff);
+		
+		int target_fps = Integer.parseInt(prefs.getString("target_fps", "20"));
+		timer.setTargetInterval(1000 / target_fps);
 	}
 }

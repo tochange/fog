@@ -13,4 +13,11 @@
 		android:summary="The Diffusion Rate"
 		android:entries="@array/diffusion_rates"
 		android:entryValues="@array/diffusion_rate_values" />
+	<ListPreference
+		android:key="target_fps"
+		android:persistent="true"
+		android:title="Target Framerate"
+		android:summary="Target Framerate. If the device cannot cope it will be automatically adjusted."
+		android:entries="@array/target_fps"
+		android:entryValues="@array/target_fps_values" />
 </PreferenceScreen> 
