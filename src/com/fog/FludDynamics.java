@@ -140,14 +140,16 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 	
 	private void advect(float dt, int b, float[] d, float[] d0, float[] u, float[] v)
 	{
-		int i0, j0, i1, j1; float x, y, s0, t0, s1, t1;
-		float dt0 = dt * width; // or * height??
+		int i0, j0, i1, j1;
+		float x, y, s0, t0, s1, t1;
+		float dt0_x = dt * width; // or * height??
+		float dt0_y = dt * height; // or * height??
 		
 		int index = stride + 1;
 		for (int i=1; i<=height; i++ ) {
 			for (int j=1; j<=width; j++ ) {
-				x = j - dt0 * u[index];
-				y = i - dt0 * v[index];
+				x = j - dt0_x * u[index];
+				y = i - dt0_y * v[index];
 				
 				if (x < 0.5) x = 0.5f;
 				if (x > width+0.5) x = width + 0.5f;
