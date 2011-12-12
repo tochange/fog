@@ -2,7 +2,6 @@ package com.fog;
 
 import java.util.Arrays;
 
-
 public class FludDynamics implements DensityTarget, VelocityTarget {
 	
 	private int width;
@@ -39,13 +38,11 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 	}
 
 	public void step(float dt) {
-		//get_from_UI( dens_prev, u_prev, v_prev );
-		vel_step (dt, u, v, u_prev, v_prev, visc);
-		dens_step (density, density_prev, u, v, dt);
-		//draw_dens ( N, dens );
+		resolveVelocities (dt, u, v, u_prev, v_prev, visc);
+		resolveDensities (density, density_prev, u, v, dt);
 	}
 	
-	private void dens_step(float[] x, float[] x0, float[] u, float[] v, float dt)
+	private void resolveDensities(float[] x, float[] x0, float[] u, float[] v, float dt)
 	{
 		float[] tmp;
 		add_source(x, x0, dt);
@@ -57,7 +54,7 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 		advect(dt, 0, x, x0, u, v);
 	}
 	
-	private void vel_step(float dt, float[] u, float[] v, float[] u0, float[] v0, float visc)
+	private void resolveVelocities(float dt, float[] u, float[] v, float[] u0, float[] v0, float viscocity)
 	{
 		float[] tmp;
 		add_source(u, u0, dt );
@@ -65,11 +62,11 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 		
 		//SWAP ( u0, u );
 		tmp = u0; u0 = u; u = tmp;
-		diffuse(dt, 1, u, u0, visc);
+		diffuse(dt, 1, u, u0, viscocity);
 		
 		//SWAP ( v0, v );
 		tmp = v0; v0 = v; v = tmp;
-		diffuse (dt, 2, v, v0, visc);
+		diffuse (dt, 2, v, v0, viscocity);
 		
 		project(u, v, u0, v0);
 		
@@ -85,23 +82,23 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 	
 	private void project(float[] u, float[] v, float[] p, float[] div)
 	{
-		int i, j, k;
 		float h = 1.0f / width; // TODO: or / width??
 		int index = stride + 1; // start at 1,1
-		for ( i=1 ; i<=height ; i++ ) {
-			for ( j=1 ; j<=width ; j++ ) {
+		for (int i=1; i<=height; i++ ) {
+			for (int j=1; j<=width; j++ ) {
 				div[index] = -0.5f * h *(u[index+1]-u[index-1]+v[index+stride]-v[index-stride]);
 				p[index] = 0;
 				index++;
 			}
 			index += stride - width;
 		}
-		setBoundaryConditions(0, div ); setBoundaryConditions (0, p);
+		setBoundaryConditions(0, div );
+		setBoundaryConditions(0, p);
 		
-		for ( k=0 ; k<20 ; k++ ) {
+		for (int k=0; k<20; k++) {
 			index = stride + 1; // start at 1,1
-			for ( i=1 ; i<=height ; i++ ) {
-				for ( j=1 ; j<=width ; j++ ) {
+			for (int i=1; i<=height; i++ ) {
+				for (int j=1; j<=width; j++ ) {
 					p[index] = (div[index]+p[index-1]+p[index+1]+ p[index-stride]+p[index+stride])/4;
 					index++;
 				}
@@ -111,8 +108,8 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 		}
 		
 		index = stride + 1; // start at 1,1
-		for ( i=1 ; i<=height ; i++ ) {
-			for ( j=1 ; j<=width ; j++ ) {
+		for (int i=1; i<=height; i++ ) {
+			for (int j=1; j<=width; j++ ) {
 				u[index] -= 0.5*(p[index+1]-p[index-1])/h;
 				v[index] -= 0.5*(p[index+stride]-p[index-stride])/h;
 				index++;
@@ -150,13 +147,13 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 				x = j-dt0*u[index];
 				y = i-dt0*v[index];
 				
-				if (x<0.5) x=0.5f;
-				if (x>width+0.5) x = width + 0.5f;
+				if (x < 0.5) x=0.5f;
+				if (x > width+0.5) x = width + 0.5f;
 				j0=(int)x;
 				j1=j0+1;
 				
-				if (y<0.5) y=0.5f;
-				if (y>height+0.5) y = height + 0.5f;
+				if (y < 0.5) y=0.5f;
+				if (y > height+0.5) y = height + 0.5f;
 				i0=(int)y;
 				i1=i0+1;
 				
