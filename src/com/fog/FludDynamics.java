@@ -226,4 +226,21 @@ public class FludDynamics {
 
 	public float getDiffusionRate() { return diff; }
 	public float getViscosity() { return visc; }
+
+	public void addUniformFlow(float uComponent, float vComponent) {
+		int index = stride + 1; // start at 1,1
+		for (int i=1 ; i<=height ; i++ ) {
+			for (int j=1 ; j<=width ; j++ ) {
+				u_prev[index] = uComponent;
+				v_prev[index] = vComponent;
+				index++;
+			}
+			index += stride - width;
+		}		
+	}
+
+	public void addFlowAt(int x, int y, float u, float v) {
+		u_prev[IX(x,y)] = u;
+		v_prev[IX(x,y)] = v;
+	}
 }

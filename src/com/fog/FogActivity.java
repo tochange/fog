@@ -1,9 +1,11 @@
 package com.fog;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -18,9 +20,12 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
 	
     private FludDynamics fluidDynamics;
     private FixedFrameRateTimer timer;
-    private View fogDrawer;
+    private FogView fogDrawer; // should be view.
 	private SharedPreferences prefs;
     
+	private GravityAdder adder;
+	private MicAdder adder2;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,11 +33,14 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        adder = new GravityAdder((SensorManager)getSystemService(Context.SENSOR_SERVICE));
+        adder2 = new MicAdder();
+        
         fluidDynamics = new FludDynamics(32, 32);
         
         timer = new FixedFrameRateTimer(this, new Handler(), 40);
         
-        fogDrawer = new FogView(this, fluidDynamics, timer);
+        fogDrawer = new FogView(this, fluidDynamics, timer, adder);
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
     }
@@ -49,15 +57,18 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
     protected void onResume()
     {
     	super.onResume();
+    	adder.resume();
     	timer.start();
     }
 
 	@Override
 	public void run() {
-		// and some flow...
-		//fluidDynamics.addSomeRandomFlow();
+		//fluidDynamics.addUniformFlow(adder.getUComponent() / 20.f, adder.getVComponent() / 20.0f);
+		int amp = adder2.getAmplitude();
+		fluidDynamics.addFlowAt(5,5, 0.0f, amp / 10.0f);
 		
 		fluidDynamics.step(millisToSeconds(timer.getInterval()));
+		fogDrawer.setAmp(amp);
 		fogDrawer.invalidate();
 		
 		fluidDynamics.clearStartingConditions();
@@ -67,6 +78,7 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
     protected void onPause()
     {
     	timer.stop();
+    	adder.pause();
     	super.onPause();
     }
 
