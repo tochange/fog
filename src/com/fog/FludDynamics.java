@@ -3,7 +3,7 @@ package com.fog;
 import java.util.Arrays;
 
 
-public class FludDynamics {
+public class FludDynamics implements DensityTarget, VelocityTarget {
 	
 	private int width;
 	private int height;

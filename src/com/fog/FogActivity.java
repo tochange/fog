@@ -20,7 +20,7 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
 	
     private FludDynamics fluidDynamics;
     private FixedFrameRateTimer timer;
-    private FogView fogDrawer; // should be view.
+    private View fogDrawer;
 	private SharedPreferences prefs;
     
 	private GravityAdder adder;
@@ -40,7 +40,7 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
         
         timer = new FixedFrameRateTimer(this, new Handler(), 40);
         
-        fogDrawer = new FogView(this, fluidDynamics, timer, adder);
+        fogDrawer = new FogView(this, fluidDynamics, timer);
         fogDrawer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setContentView(fogDrawer);
     }
@@ -68,7 +68,6 @@ public class FogActivity extends Activity implements Runnable, OnSharedPreferenc
 		fluidDynamics.addFlowAt(5,5, 0.0f, amp / 10.0f);
 		
 		fluidDynamics.step(millisToSeconds(timer.getInterval()));
-		fogDrawer.setAmp(amp);
 		fogDrawer.invalidate();
 		
 		fluidDynamics.clearStartingConditions();
