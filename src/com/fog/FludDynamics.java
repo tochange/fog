@@ -82,11 +82,13 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 	
 	private void project(float[] u, float[] v, float[] p, float[] div)
 	{
-		float h = 1.0f / width; // TODO: or / width??
+		float h_x = 1.0f / width;
+		float h_y = 1.0f / height;
 		int index = stride + 1; // start at 1,1
 		for (int i=1; i<=height; i++ ) {
 			for (int j=1; j<=width; j++ ) {
-				div[index] = -0.5f * h *(u[index+1]-u[index-1]+v[index+stride]-v[index-stride]);
+				div[index] =
+					-0.5f * h_x * (u[index+1]-u[index-1]) + -0.5f * h_y * (v[index+stride]-v[index-stride]);
 				p[index] = 0;
 				index++;
 			}
@@ -110,8 +112,8 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 		index = stride + 1; // start at 1,1
 		for (int i=1; i<=height; i++ ) {
 			for (int j=1; j<=width; j++ ) {
-				u[index] -= 0.5*(p[index+1]-p[index-1])/h;
-				v[index] -= 0.5*(p[index+stride]-p[index-stride])/h;
+				u[index] -= 0.5*(p[index+1]-p[index-1])/h_x;
+				v[index] -= 0.5*(p[index+stride]-p[index-stride])/h_y;
 				index++;
 			}
 			index += stride - width;
@@ -138,24 +140,24 @@ public class FludDynamics implements DensityTarget, VelocityTarget {
 	
 	private void advect(float dt, int b, float[] d, float[] d0, float[] u, float[] v)
 	{
-		int i, j, i0, j0, i1, j1; float x, y, s0, t0, s1, t1;
+		int i0, j0, i1, j1; float x, y, s0, t0, s1, t1;
 		float dt0 = dt * width; // or * height??
 		
 		int index = stride + 1;
-		for ( i=1 ; i<=height ; i++ ) {
-			for ( j=1 ; j<=width ; j++ ) {
-				x = j-dt0*u[index];
-				y = i-dt0*v[index];
+		for (int i=1; i<=height; i++ ) {
+			for (int j=1; j<=width; j++ ) {
+				x = j - dt0 * u[index];
+				y = i - dt0 * v[index];
 				
-				if (x < 0.5) x=0.5f;
+				if (x < 0.5) x = 0.5f;
 				if (x > width+0.5) x = width + 0.5f;
-				j0=(int)x;
-				j1=j0+1;
+				j0 = (int)x;
+				j1 = j0+1;
 				
-				if (y < 0.5) y=0.5f;
+				if (y < 0.5) y = 0.5f;
 				if (y > height+0.5) y = height + 0.5f;
-				i0=(int)y;
-				i1=i0+1;
+				i0 = (int)y;
+				i1 = i0+1;
 				
 				s1 = x-j0;
 				s0 = 1-s1;
